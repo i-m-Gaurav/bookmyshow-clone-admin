@@ -1,7 +1,7 @@
 'use client';
 
 import axios from 'axios';
-import React, {  useState } from 'react';
+import React, { useState } from 'react';
 import { useSession } from 'next-auth/react';
 
 const AddEvent = () => {
@@ -9,29 +9,30 @@ const AddEvent = () => {
     const [date, setDate] = useState<string>("");
     const [location, setLocation] = useState<string>("");
     const [description, setDescription] = useState<string>("");
+    const [totalSeats, setTotalSeats] = useState<number>();
 
-    const {data: session,status} = useSession();
+    const { data: session, status } = useSession();
 
     console.log(session)
 
-   
+
 
 
     const handleAddEvent = async (e: React.FormEvent) => {
         e.preventDefault();
 
-        
-    if (status === "loading") {
-        console.log("Session is still loading...");
-        return;
-    }
+
+        if (status === "loading") {
+            console.log("Session is still loading...");
+            return;
+        }
 
 
 
-    if (!session?.user?.email) {
-        console.error("User is not authenticated or adminId is missing.");
-        return;
-    }
+        if (!session?.user?.email) {
+            console.error("User is not authenticated or adminId is missing.");
+            return;
+        }
 
         try {
 
@@ -48,12 +49,14 @@ const AddEvent = () => {
 
 
 
+               
 
             const response = await axios.post("/api/addEvent", {
                 name,
                 date,
                 location,
                 description,
+                totalSeats,
                 adminId,
             });
 
@@ -62,7 +65,8 @@ const AddEvent = () => {
             // Clear the form after successful submission
             setName("");
             setDate("");
-          
+           
+
             setLocation("");
             setDescription("");
         } catch (error) {
@@ -98,16 +102,17 @@ const AddEvent = () => {
                     />
                 </div>
 
-                {/* <div className="mb-4">
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Event Time</label>
-                    <input
-                        type="time"
-                        value={time}
-                        onChange={(e) => setTime(e.target.value)}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        required
-                    />
-                </div> */}
+                <label htmlFor="totalSeats">Total Seats</label>
+                <input
+                    type="number"
+                    id="totalSeats"
+                    name="totalSeats"
+                    required
+                    value={totalSeats}
+                    min="1"
+                    onChange={(e) => setTotalSeats(parseInt(e.target.value))}
+                />
+
 
                 <div className="mb-4">
                     <label className="block text-sm font-medium text-gray-700 mb-1">Event Location</label>
