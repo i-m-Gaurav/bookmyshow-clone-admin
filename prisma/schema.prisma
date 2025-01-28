@@ -1,0 +1,25 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Admin {
+  id    String @id @default(uuid())
+  email String @unique
+  name  String
+  events Event[] // Relation to Event model
+}
+
+model Event {
+  id          String   @id @default(uuid())
+  name        String
+  date        DateTime
+  location    String
+  description String
+  admin       Admin    @relation(fields: [adminId], references: [id]) // Relation to Admin model
+  adminId     String   // Foreign key to Admin model
+}
