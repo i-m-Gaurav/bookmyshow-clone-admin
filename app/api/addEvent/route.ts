@@ -9,9 +9,9 @@ export async function POST(req: NextRequest) {
   try {
     // Parse the request body
     const body = await req.json();
-    const { name, description, date, location, adminId } = body;
+    const { name, description, date, location, adminId, totalSeats, } = body;
 
-    console.log("Received data:", { name, description, date, location, adminId });
+    console.log("Received data:", { name, description, date, location,totalSeats, adminId });
 
     // Validate required fields
     if (!name || !description || !date || !location || !adminId) {
@@ -29,6 +29,8 @@ export async function POST(req: NextRequest) {
             date : new Date(date),
             location,
             adminId,
+            totalSeats,
+            availableSeats : totalSeats,
         },
         });
 
