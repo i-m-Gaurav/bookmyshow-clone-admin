@@ -22,4 +22,8 @@ model Event {
   description String
   admin       Admin    @relation(fields: [adminId], references: [id]) // Relation to Admin model
   adminId     String   // Foreign key to Admin model
+  totalSeats  Int
+  availableSeats Int
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
