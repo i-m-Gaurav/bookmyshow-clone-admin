@@ -5,6 +5,8 @@ import { getToken } from 'next-auth/jwt';
 export async function middleware(req: NextRequest) {
     const token = await getToken({ req, secret: process.env.AUTH_SECRET });
 
+    console.log(token);
+
     // If the user is not authenticated, redirect to the home page
     if (!token) {
         return NextResponse.redirect(new URL('/', req.url));

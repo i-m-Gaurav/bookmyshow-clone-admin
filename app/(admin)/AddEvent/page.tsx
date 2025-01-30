@@ -3,7 +3,7 @@
 import axios from 'axios';
 import React, {  useState } from 'react';
 import { useSession } from 'next-auth/react';
-
+import { useRouter } from 'next/navigation';
 
 const AddEvent = () => {
     const [name, setName] = useState<string>("");
@@ -14,17 +14,13 @@ const AddEvent = () => {
     const [imageUrl , setImageUrl] = useState<string>("");
 
     const { data: session, status } = useSession();
+    const router = useRouter();
 
-   
-
-    
-   
-
-   
-
-  
-
-
+    if (status === "unauthenticated") {
+        router.push('/');
+        return <p>Access Denied</p>
+       
+      }
 
     const handleAddEvent = async (e: React.FormEvent) => {
         e.preventDefault();
