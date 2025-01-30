@@ -1,17 +1,22 @@
 'use client';
 
 import axios from 'axios';
-import React, {  useState } from 'react';
+import React, { useState } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Label } from "@/components/ui/label";
 
 const AddEvent = () => {
-    const [name, setName] = useState<string>("");
-    const [date, setDate] = useState<string>("");
-    const [location, setLocation] = useState<string>("");
-    const [description, setDescription] = useState<string>("");
+    const [name, setName] = useState("");
+    const [date, setDate] = useState("");
+    const [location, setLocation] = useState("");
+    const [description, setDescription] = useState("");
     const [totalSeats, setTotalSeats] = useState<number>();
-    const [imageUrl , setImageUrl] = useState<string>("");
+    const [imageUrl , setImageUrl] = useState("");
 
     const { data: session, status } = useSession();
     const router = useRouter();
@@ -19,40 +24,19 @@ const AddEvent = () => {
     if (status === "unauthenticated") {
         router.push('/');
         return <p>Access Denied</p>
-       
-      }
+    }
 
     const handleAddEvent = async (e: React.FormEvent) => {
         e.preventDefault();
-
-        console.log("status is this :",status);
-
-
-        if (status === "loading") {
-            console.log("Session is still loading...");
-            return;
-        }
-
-
-
-        if (!session?.user?.email) {
-            console.error("User is not authenticated or adminId is missing.");
-            return;
-        }
+        if (status === "loading" || !session?.user?.email) return;
 
         try {
-
             const adminResponse = await axios.get(`/api/getAdminByEmail?email=${session?.user?.email}`);
             const admin = adminResponse.data;
-
-            if (!admin) {
-                throw new Error("Admin not found.");
-            }
-
-            console.log("image url is ",imageUrl);
+            if (!admin) throw new Error("Admin not found.");
 
             const adminId = admin.id;
-            const response = await axios.post("/api/addEvent", {
+            await axios.post("/api/addEvent", {
                 name,
                 date,
                 location,
@@ -62,9 +46,6 @@ const AddEvent = () => {
                 adminId,
             });
 
-            console.log(response.data);
-
-            // Clear the form after successful submission
             setName("");
             setDate("");
             setImageUrl("");
@@ -77,79 +58,45 @@ const AddEvent = () => {
 
     return (
         <div className="min-h-screen flex items-center justify-center bg-gray-100">
-            <form onSubmit={handleAddEvent} className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
-                <h2 className="text-2xl font-bold mb-6 text-center">Add Event</h2>
-
-                <div className="mb-4">
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Event Name</label>
-                    <input
-                        type="text"
-                        value={name}
-                        onChange={(e) => setName(e.target.value)}
-                        placeholder="Enter event name"
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        required
-                    />
+            <div className="w-full max-w-5xl flex bg-white shadow-lg rounded-lg overflow-hidden">
+                <div className="w-1/2 hidden md:flex items-center justify-center bg-blue-500">
+                    <img src="/event-art.svg" alt="Event Artwork" className="w-3/4 h-auto" />
                 </div>
-
-                <div className="mb-4">
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Event Date</label>
-                    <input
-                        type="date"
-                        value={date}
-                        onChange={(e) => setDate(e.target.value)}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        required
-                    />
+                <div className="w-full md:w-1/2 p-8">
+                    <h2 className="text-3xl font-bold mb-6 text-center">Add Event</h2>
+                    <Card>
+                        <CardContent className="p-6 space-y-4">
+                            <form onSubmit={handleAddEvent}>
+                                <div>
+                                    <Label>Event Name</Label>
+                                    <Input type="text" value={name} onChange={(e) => setName(e.target.value)} required />
+                                </div>
+                                <div>
+                                    <Label>Event Date</Label>
+                                    <Input type="date" value={date} onChange={(e) => setDate(e.target.value)} required />
+                                </div>
+                                <div>
+                                    <Label>Image URL</Label>
+                                    <Input type="text" value={imageUrl} onChange={(e) => setImageUrl(e.target.value)} required />
+                                </div>
+                                <div>
+                                    <Label>Total Seats</Label>
+                                    <Input type="number" value={totalSeats} min="1" onChange={(e) => setTotalSeats(parseInt(e.target.value))} required />
+                                </div>
+                                <div>
+                                    <Label>Event Location</Label>
+                                    <Input type="text" value={location} onChange={(e) => setLocation(e.target.value)} required />
+                                </div>
+                                <div>
+                                    <Label>Event Description</Label>
+                                    <Textarea value={description} onChange={(e) => setDescription(e.target.value)} required />
+                                </div>
+                                <Button type="submit" className="w-full mt-4">Add Event</Button>
+                            </form>
+                        </CardContent>
+                    </Card>
                 </div>
-                <div>
-                    <label>Image</label>
-                    <input type="text" value = {imageUrl} required onChange={(e) => setImageUrl(e.target.value)} />
-                </div>
-
-                <label htmlFor="totalSeats">Total Seats</label>
-                <input
-                    type="number"
-                    id="totalSeats"
-                    name="totalSeats"
-                    required
-                    value={totalSeats}
-                    min="1"
-                    onChange={(e) => setTotalSeats(parseInt(e.target.value))}
-                />
-
-
-                <div className="mb-4">
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Event Location</label>
-                    <input
-                        type="text"
-                        value={location}
-                        onChange={(e) => setLocation(e.target.value)}
-                        placeholder="Enter event location"
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        required
-                    />
-                </div>
-
-                <div className="mb-6">
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Event Description</label>
-                    <textarea
-                        value={description}
-                        onChange={(e) => setDescription(e.target.value)}
-                        placeholder="Enter event description"
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        rows={4}
-                        required
-                    />
-                </div>
-
-                <button
-                    type="submit"
-                    className="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 transition duration-200"
-                >
-                    Add Event
-                </button>
-            </form>
+            </div>
         </div>
     );
 };
