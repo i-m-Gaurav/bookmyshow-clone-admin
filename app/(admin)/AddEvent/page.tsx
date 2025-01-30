@@ -1,8 +1,9 @@
 'use client';
 
 import axios from 'axios';
-import React, { useState } from 'react';
+import React, {  useState } from 'react';
 import { useSession } from 'next-auth/react';
+
 
 const AddEvent = () => {
     const [name, setName] = useState<string>("");
@@ -14,12 +15,21 @@ const AddEvent = () => {
 
     const { data: session, status } = useSession();
 
+   
+
+    
+   
+
+   
+
   
 
 
 
     const handleAddEvent = async (e: React.FormEvent) => {
         e.preventDefault();
+
+        console.log("status is this :",status);
 
 
         if (status === "loading") {
