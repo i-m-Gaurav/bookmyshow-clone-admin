@@ -19,6 +19,7 @@ model Event {
   name        String
   date        DateTime
   location    String
+  imageUrl    String
   description String
   admin       Admin    @relation(fields: [adminId], references: [id]) // Relation to Admin model
   adminId     String   // Foreign key to Admin model
@@ -26,4 +27,25 @@ model Event {
   availableSeats Int
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+  bookings      Booking[]
+}
+
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  name          String
+  image         String?
+  bookings      Booking[] // One-to-many relation to bookings
+}
+
+model Booking {
+  id            Int       @id @default(autoincrement())
+  userId        String    // Reference to the User
+  eventId        String       // Reference to the Show
+  seatsBooked   Int
+  bookingDate   DateTime  @default(now()) // When the booking was made
+  status        String   @default("booked") // Could be 'booked', 'cancelled', etc.
+  
+  user          User     @relation(fields: [userId], references: [id])
+  event        Event    @relation(fields: [eventId], references: [id])
 }

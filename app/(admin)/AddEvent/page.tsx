@@ -10,11 +10,11 @@ const AddEvent = () => {
     const [location, setLocation] = useState<string>("");
     const [description, setDescription] = useState<string>("");
     const [totalSeats, setTotalSeats] = useState<number>();
+    const [imageUrl , setImageUrl] = useState<string>("");
 
     const { data: session, status } = useSession();
 
-    console.log(session)
-
+  
 
 
 
@@ -36,8 +36,6 @@ const AddEvent = () => {
 
         try {
 
-
-
             const adminResponse = await axios.get(`/api/getAdminByEmail?email=${session?.user?.email}`);
             const admin = adminResponse.data;
 
@@ -45,16 +43,14 @@ const AddEvent = () => {
                 throw new Error("Admin not found.");
             }
 
+            console.log("image url is ",imageUrl);
+
             const adminId = admin.id;
-
-
-
-               
-
             const response = await axios.post("/api/addEvent", {
                 name,
                 date,
                 location,
+                imageUrl,
                 description,
                 totalSeats,
                 adminId,
@@ -65,8 +61,7 @@ const AddEvent = () => {
             // Clear the form after successful submission
             setName("");
             setDate("");
-           
-
+            setImageUrl("");
             setLocation("");
             setDescription("");
         } catch (error) {
@@ -100,6 +95,10 @@ const AddEvent = () => {
                         className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                         required
                     />
+                </div>
+                <div>
+                    <label>Image</label>
+                    <input type="text" value = {imageUrl} required onChange={(e) => setImageUrl(e.target.value)} />
                 </div>
 
                 <label htmlFor="totalSeats">Total Seats</label>

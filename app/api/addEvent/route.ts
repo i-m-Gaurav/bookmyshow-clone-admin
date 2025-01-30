@@ -1,7 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { PrismaClient } from "@prisma/client";
-
-const prisma = new PrismaClient();
+import {prisma} from '@/lib/prisma'
 
 export async function POST(req: NextRequest) {
 
@@ -9,12 +7,12 @@ export async function POST(req: NextRequest) {
   try {
     // Parse the request body
     const body = await req.json();
-    const { name, description, date, location, adminId, totalSeats, } = body;
+    const { name, description, date, location, adminId,imageUrl, totalSeats, } = body;
 
-    console.log("Received data:", { name, description, date, location,totalSeats, adminId });
+    console.log("Received data:", { name, description, date, location,imageUrl, totalSeats, adminId });
 
-    // Validate required fields
-    if (!name || !description || !date || !location || !adminId) {
+     // Validate required fields
+     if (!name || !description || !date || !location || !adminId) {
       return NextResponse.json(
         { error: "All fields are required, including adminId" },
         { status: 400 }
@@ -22,20 +20,20 @@ export async function POST(req: NextRequest) {
     }
 
     // Create the event
-   const newEvent = await prisma.event.create({
-        data: {
-            name,
-            description,
-            date : new Date(date),
-            location,
-            adminId,
-            totalSeats,
-            availableSeats : totalSeats,
-        },
-        });
+    const newEvent = await prisma.event.create({
+      data: {
+          name,
+          description,
+          date : new Date(date),
+          location,
+          imageUrl,
+          adminId,
+          totalSeats,
+          availableSeats : totalSeats,
+      },
+      });
 
-        console.log("Event created:", newEvent);
-
+    console.log("Event created:", newEvent);
 
     // Return the created event
 
