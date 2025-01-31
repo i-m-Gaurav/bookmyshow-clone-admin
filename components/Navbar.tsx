@@ -1,6 +1,7 @@
 "use client";
 import { signIn, signOut, useSession } from "next-auth/react";
 import Image from "next/image";
+import Link from 'next/link'
 
 
 const Navbar = () => {
@@ -14,7 +15,8 @@ const Navbar = () => {
           <div className="flex items-center space-x-4">
             <div className="flex-shrink-0">
               <h1 className="text-red-500 text-2xl font-bold">
-                book<span className="text-blue-500">my</span>show
+                <Link href='/'>
+                show<span className="text-blue-500">Time</span></Link>
               </h1>
             </div>
           </div>

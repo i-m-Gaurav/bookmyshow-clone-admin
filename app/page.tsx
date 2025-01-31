@@ -37,7 +37,7 @@ export default function Home() {
       <div className="w-full md:w-1/2 bg-gray-50 flex justify-center ">
         <div className="max-w-md mx-auto py-8 px-4 flex flex-col justify-center items-center ">
           <h1 className="text-3xl font-bold text-gray-900 mb-8">List your event here.</h1>
-          <Button variant="destructive" onClick={() => {
+          <Button className='bg-red-500 hover:bg-red-600' variant="destructive" onClick={() => {
             if (status !== 'authenticated') {
               toast({
                 title: "Uh oh! Something went wrong.",
