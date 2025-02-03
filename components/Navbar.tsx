@@ -2,6 +2,7 @@
 import { signIn, signOut, useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from 'next/link'
+import logo from '../public/logo.png'
 
 
 const Navbar = () => {
@@ -16,7 +17,8 @@ const Navbar = () => {
             <div className="flex-shrink-0">
               <h1 className="text-red-500 text-2xl font-bold">
                 <Link href='/'>
-                show<span className="text-blue-500">Time</span></Link>
+                <Image src = {logo} alt = "logo image" width={120} height={120}/>
+                </Link>
               </h1>
             </div>
           </div>
