@@ -3,6 +3,10 @@ import {prisma} from '@/lib/prisma'
 
 export async function POST(req: NextRequest) {
 
+
+
+  
+
    
   try {
     // Parse the request body
@@ -10,6 +14,8 @@ export async function POST(req: NextRequest) {
     const { name, description, date, location, adminId,imageUrl, totalSeats, } = body;
 
     console.log("Received data:", { name, description, date, location,imageUrl, totalSeats, adminId });
+
+    console.log("Body data" , {body});
 
      // Validate required fields
      if (!name || !description || !date || !location || !adminId) {
@@ -30,6 +36,11 @@ export async function POST(req: NextRequest) {
           adminId,
           totalSeats,
           availableSeats : totalSeats,
+          seat : {
+            create : Array.from({length : totalSeats},(_,index)=>({
+              number : index + 1,
+            }))
+          },
       },
       });
 

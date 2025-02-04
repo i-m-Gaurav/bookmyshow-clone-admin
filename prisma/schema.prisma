@@ -1,51 +1,64 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
-generator client {
-  provider = "prisma-client-js"
-}
-
 model Admin {
-  id    String @id @default(uuid())
-  email String @unique
-  name  String
-  events Event[] // Relation to Event model
+  id     String  @id @default(uuid())
+  email  String  @unique
+  name   String
+  events Event[]
 }
 
 model Event {
-  id          String   @id @default(uuid())
-  name        String
-  date        DateTime
-  location    String
-  imageUrl    String
-  description String
-  admin       Admin    @relation(fields: [adminId], references: [id]) // Relation to Admin model
-  adminId     String   // Foreign key to Admin model
-  totalSeats  Int
+  id             String    @id @default(uuid())
+  name           String
+  date           DateTime
+  location       String
+  description    String
+  adminId        String
+  totalSeats     Int
   availableSeats Int
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  bookings      Booking[]
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  imageUrl       String
+  bookings       Booking[]
+  admin          Admin     @relation(fields: [adminId], references: [id])
+  seat           Seat[]
 }
 
 model User {
-  id            String    @id @default(cuid())
-  email         String    @unique
-  name          String
-  image         String?
-  bookings      Booking[] // One-to-many relation to bookings
+  id       String    @id @default(cuid())
+  email    String    @unique
+  name     String
+  image    String?
+  bookings Booking[]
 }
 
 model Booking {
-  id            Int       @id @default(autoincrement())
-  userId        String    // Reference to the User
-  eventId        String       // Reference to the Show
-  seatsBooked   Int
-  bookingDate   DateTime  @default(now()) // When the booking was made
-  status        String   @default("booked") // Could be 'booked', 'cancelled', etc.
-  
-  user          User     @relation(fields: [userId], references: [id])
-  event        Event    @relation(fields: [eventId], references: [id])
+  id               Int      @id @default(autoincrement())
+  userId           String
+  eventId          String
+  seatsBooked      Int
+  bookingDate      DateTime @default(now())
+  status           String   @default("booked")
+  paymentReference String   @default("null")
+  userContact      String?
+  event            Event    @relation(fields: [eventId], references: [id])
+  user             User     @relation(fields: [userId], references: [id])
+  Seat             Seat[]
+}
+
+model Seat {
+  id        String @id @default(uuid())
+  number    Int
+  eventId   String
+  status    String   @default("available")
+  bookingId Int?
+  Booking   Booking? @relation(fields: [bookingId], references: [id])
+  Event     Event    @relation(fields: [eventId], references: [id])
 }
