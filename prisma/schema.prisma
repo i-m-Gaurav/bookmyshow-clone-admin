@@ -97,7 +97,7 @@ model Event {
   imageUrl       String
   bookings       Booking[]
   admin          Admin     @relation(fields: [adminId], references: [id])
-  seats          Seat[]
+  seat          Seat[]
 }
 
 model User {
@@ -119,7 +119,7 @@ model Booking {
   userContact      String?
   event            Event    @relation(fields: [eventId], references: [id])
   user             User     @relation(fields: [userId], references: [id])
-  seats            Seat[]
+  Seat            Seat[]
 }
 
 model Seat {
