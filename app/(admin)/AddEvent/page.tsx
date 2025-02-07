@@ -25,8 +25,6 @@ const AddEvent = () => {
 
     if (status === "unauthenticated") {
         router.push('/');
-        
-
     }
 
     const handleAddEvent = async (e: React.FormEvent) => {
